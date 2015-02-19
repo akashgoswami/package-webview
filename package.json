@@ -1,7 +1,7 @@
 {
-    "name": "chat",
+    "name": "webview",
     "version": "0.0.0",
-    "description": "Lateral Chat Panel",
+    "description": "Webview Chat Panel",
     "main": "src/index",
     "node": "node/index",
     "engines": {

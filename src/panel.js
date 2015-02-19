@@ -1,8 +1,6 @@
 define([
-    "src/messages",
-    "src/settings",
     "text!src/templates/panel.html"
-], function(Messages, settings, templatePanel) {
+], function(templatePanel) {
     var hr = codebox.require("hr/hr");
     var $ = codebox.require("hr/dom");
     var rpc = codebox.require("core/rpc");
@@ -10,75 +8,22 @@ define([
 
     var Panel = hr.View.extend({
         template: templatePanel,
-        className: "component-panel-chat",
-        events: {
-            "keydown .post-message textarea": "onInputKeydown"
-        },
+        className: "webview",
 
         initialize: function(options) {
             Panel.__super__.initialize.apply(this, arguments);
-
-            this.animation = null;
-            this.messages = new Messages({}, this);
-
-            // On new messages
-            this.listenTo(events, "e:chat:message", function(msg) {
-                this.messages.collection.push(msg);
-            });
-
-            // Handle scrolling correctly
-            this.listenTo(this.messages, "add", function() {
-                if (this.animation != null) {
-                    this.animation.stop();
-                }
-
-                this.animation = this.$(".inner").animate({
-                    scrollTop: this.$(".inner")[0].scrollHeight
-                }, 60);
-            });
-
-            // Load messages
-            this.loadMessages();
         },
 
         render: function() {
-            this.messages.detach();
-
             return Panel.__super__.render.apply(this, arguments);
         },
 
         finish: function() {
-            this.messages.appendTo(this.$(".inner"));
-
+            this.$(".inner").html("<img src='https://preview.c9.io/aagosh/boot9/animation/css3-neon-glow/bg.png'></img>");
             return Panel.__super__.finish.apply(this, arguments);
         },
 
-        // Load all previous message
-        loadMessages: function() {
-            var that = this;
 
-            return rpc.execute("chat/messages")
-            .then(function(messages) {
-                that.messages.collection.reset(messages);
-            });
-        },
-
-        // Keydown on textarea
-        onInputKeydown: function(e) {
-            var key = e.keyCode || e.which;
-            var $input = $(e.currentTarget);
-            var val = $input.val();
-
-            if (key === 13 && val.length > 0) {
-                e.preventDefault();
-
-                rpc.execute("chat/post", {
-                    "message": val
-                }).then(function() {
-                    $input.val("");
-                });
-            }
-        }
     });
 
     return Panel;
