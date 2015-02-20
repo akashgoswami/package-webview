@@ -1,3 +1,3 @@
-# Chat
+# Webview
 
-This package contains the lateral chat panel.
+This package contains basic webview panel
